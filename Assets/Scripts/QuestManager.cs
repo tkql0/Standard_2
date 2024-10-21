@@ -21,4 +21,18 @@ public class QuestManager : MonoBehaviour
         }
     }
     // [구현사항 2] 정적 프로퍼티 정의
+
+    private void Awake()
+    {
+        if (instance == null)
+        {
+            instance = this;
+            DontDestroyOnLoad(this.gameObject);
+        }
+        else
+        {
+            Destroy(this.gameObject);
+        }
+    }
+    // [구현사항 3] 인스턴스 검사 로직
 }
