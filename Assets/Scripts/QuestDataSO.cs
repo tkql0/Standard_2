@@ -12,10 +12,6 @@ public class QuestDataSO : ScriptableObject
     public List<int> QuestPrerequisites; //- 선행 퀘스트의 id들의 리스트
     //[구현사항 1]
 }
-//**[구현사항 2]**
-
-//`QuestDataSO`를 상속받는 `MonsterQuestDataSO`와 `EncounterQuestDataSO`를 정의하고, 각각에 필드를 한 개씩 정의한 뒤(본인이 임의로 넣어보면 됩니다.) 이를 생성해봅시다.
-
 //**[구현사항 3]**
 
 //Q1에서 정의한 `QuestManager`에 퀘스트 데이터들을 다양하게 생성하여 `Quests` 필드를 정의하여 인스펙터창에 넣고, 시작하면 모든 퀘스트의 이름과 최소레벨을 아래와 같이 출력하세요.
