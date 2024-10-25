@@ -1,40 +1,91 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Pool;
+using static ObjectPool;
 
 public class ObjectPool : MonoBehaviour
 {
-    public GameObject prefab;
-    private List<GameObject> pool = new List<GameObject>();
-    public int poolSize = 300;
+    [System.Serializable]
+    public class Pool
+    {
+        public string tag;
+        public GameObject prefab;
+        public int size;
+        public Transform objectGroup;
+    }
+
+    public List<Pool> pools = new List<Pool>();
+    private Dictionary<string, List<GameObject>> poolDictionary =
+        new Dictionary<string, List<GameObject>>();
     
     void Start()
     {
-        // 미리 poolSize만큼 게임오브젝트를 생성한다.
-        for (int i = 0; i < poolSize; i++)
+        foreach (var pool in pools)
         {
-            Release(Instantiate(prefab, transform));
+            List<GameObject> spawnPool = new List<GameObject>();
+
+            // 미리 poolSize만큼 게임오브젝트를 생성한다.
+            for (int i = 0; i < pool.size; i++)
+            {
+                GameObject newObject = Instantiate(pool.prefab, pool.objectGroup);
+                Release(spawnPool, newObject);
+            }
+
+            poolDictionary.Add(pool.tag, spawnPool);
         }
     }
 
-    public GameObject Get()
+    public void SpawnObject(string InTag)
     {
-        if (pool[0] != null)
+        Get(InTag);
+    }
+
+    public GameObject Get(string InTag)
+    {
+        if (!poolDictionary.ContainsKey(InTag))
         {
             return null;
         }
-        pool[0].SetActive(true);
-        // 꺼져있는 게임오브젝트를 찾아 active한 상태로 변경하고 return 한다.
+        List<GameObject> spawnObject = poolDictionary[InTag];
 
-        return pool[0];
+        foreach (GameObject outSpawnObj in spawnObject)
+        {
+            if (!outSpawnObj.activeSelf)
+            {
+                outSpawnObj.SetActive(true);
+                // 꺼져있는 게임오브젝트를 찾아 active한 상태로 변경하고 return 한다.
+
+                return outSpawnObj;
+            }
+        }
+
+        if (spawnObject[spawnObject.Count].activeSelf)
+        {
+            for(int i = 0; i < poolDictionary.Count; i++)
+            {
+                if(poolDictionary.ContainsKey(InTag))
+                {
+                    GameObject outNewObject =
+                        Instantiate(pools[i].prefab, pools[i].objectGroup);
+                    Release(spawnObject, outNewObject);
+
+                    outNewObject.SetActive(true);
+
+                    return outNewObject;
+                }
+            }
+        }
+
+        return null;
     }
 
-    public void Release(GameObject obj)
+    public void Release(List<GameObject> inPoolList, GameObject InObj)
     {
         // 게임오브젝트를 deactive한다.
-        obj.SetActive(false);
+        InObj.SetActive(false);
 
-        pool.Add(obj);
+        inPoolList.Add(InObj);
     }
 
     // [구현사항 1]

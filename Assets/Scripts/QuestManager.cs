@@ -12,10 +12,12 @@ public class QuestManager : MonoBehaviour
         get
         {
             if (instance == null)
+            {
                 instance = FindObjectOfType<QuestManager>();
 
-            if (instance == null)
-                instance = new GameObject("QuestManager").AddComponent<QuestManager>();
+                if (instance == null)
+                    instance = new GameObject("QuestManager").AddComponent<QuestManager>();
+            }
 
             return instance;
         }
