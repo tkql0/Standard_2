@@ -7,6 +7,23 @@ public class QuestManager : MonoBehaviour
     private static QuestManager instance;
     //[구현사항 1] 정적 필드 정의
 
+    public QuestDataSO[] Quests;
+
+    private void OnEnable()
+    {
+        for (int i = 0; i < Quests.Length; i++)
+        {
+            Debug.Log(Quest(i));
+        }
+    }
+
+    string Quest(int inQuestNumber)
+    {
+        return $"Quist {inQuestNumber + 1} - " +
+            $"{Quests[inQuestNumber].QuestName}" +
+            $" (최소레벨 {Quests[inQuestNumber].QuestRequiredLevel})";
+    }
+    // [구현사항 3?]
     public static QuestManager Instance
     {
         get
